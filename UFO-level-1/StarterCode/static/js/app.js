@@ -1,29 +1,34 @@
-const input = d3.select('#datetime')
-const button = d3.selectAll('#filter-btn')
+const input = d3.select('input')
+const button = d3.select('button')
+const tbody = d3.select('tbody')
 
-const handler = function(input){
+function buildTable(data) {
+    tbody.html('')  // Clear existing data
 
-    const filterCond = input.property('value');//should value be switched with placdeholder?
+    data.forEach(row => {
+        const currentRow = tbody.append('tr')  // append row
+        Object.values(row).forEach(value => {
+            const cell = currentRow.append('td')
+            cell.text(value)
+        })
+    })
+}
 
-    const table = d3.select("body").append("table")
+const handler = function(){
 
-    //add headers to table
-    const headerRow = table.append("thead").append("tr")
-    headerRow.append("th").text("Date/Time")
-    headerRow.append("th").text("City")
-    headerRow.append("th").text("State")
-    headerRow.append("th").text("Country")
-    headerRow.append("th").text("Shape")
-    headerRow.append("th").text("Duration In Mins")
-    headerRow.append("th").text("Comments")
+    // declare input value and table data variables
+    let filterCond = input.property('value');//should value be switched with placdeholder?
+    let filteredData = data 
 
-    //add rows of data to table
-    const tbody = table.append("tbody")
+    // set condition if there is an input data then table data should match the date provided in input
+    if (filterCond)
+        filteredData = filteredData.filter(row => row.datetime === filterCond)
+    
+    tbody.html('')  // Clear existing data
 
-    //filter rows to match the value in the inputted condition
-    //so if filter condition = TRUE the rows that match will 
-    //appear in table
-    data.filter(dataRow => dataRow.datetime === filterCond).data.forEach(dataRow =>{
+
+    //appends data rows to table
+    filteredData.forEach(dataRow =>{
         let row = tbody.append("tr")
         row.append("td").text(dataRow.datetime)
         row.append("td").text(dataRow.city)
@@ -32,7 +37,7 @@ const handler = function(input){
         row.append("td").text(dataRow.shape)
         row.append("td").text(dataRow.durationMinutes)
         row.append("td").text(dataRow.comments)
-    })
+     })
 }
 
 
